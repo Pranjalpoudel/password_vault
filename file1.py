@@ -41,6 +41,30 @@ def add_task(title: str, note: Optional[str] = None, priority: str = "medium", p
     return new_task
 
 
+def update_task(
+    task_id: int,
+    title: Optional[str] = None,
+    note: Optional[str] = None,
+    priority: Optional[str] = None,
+    path: Optional[Path] = None,
+) -> Optional[dict]:
+    storage_path = path or DEFAULT_PATH
+    tasks = _load_tasks(storage_path)
+
+    for task in tasks:
+        if task.get("id") == task_id:
+            if title is not None:
+                task["title"] = title
+            if note is not None:
+                task["note"] = note
+            if priority is not None:
+                task["priority"] = priority
+            _save_tasks(storage_path, tasks)
+            return task
+
+    return None
+
+
 def list_tasks(path: Optional[Path] = None, completed: Optional[bool] = None) -> list[dict]:
     storage_path = path or DEFAULT_PATH
     tasks = _load_tasks(storage_path)
@@ -115,6 +139,12 @@ def build_parser() -> argparse.ArgumentParser:
     complete_parser = subparsers.add_parser("complete", help="Mark a task as complete")
     complete_parser.add_argument("task_id", type=int, help="ID of the task to complete")
 
+    update_parser = subparsers.add_parser("update", help="Update a task")
+    update_parser.add_argument("task_id", type=int, help="ID of the task to update")
+    update_parser.add_argument("--title", help="New task title")
+    update_parser.add_argument("--note", help="New task note")
+    update_parser.add_argument("--priority", choices=["low", "medium", "high"], help="New task priority")
+
     delete_parser = subparsers.add_parser("delete", help="Delete a task")
     delete_parser.add_argument("task_id", type=int, help="ID of the task to remove")
 
@@ -159,6 +189,20 @@ def main(argv: Optional[list[str]] = None) -> int:
         task = complete_task(args.task_id, path=storage_path)
         if task:
             print(f"Completed task {task['id']}: {task['title']}")
+        else:
+            print("Task not found.")
+        return 0
+
+    if args.command == "update":
+        task = update_task(
+            args.task_id,
+            title=args.title,
+            note=args.note,
+            priority=args.priority,
+            path=storage_path,
+        )
+        if task:
+            print(f"Updated task {task['id']}: {task['title']}")
         else:
             print("Task not found.")
         return 0

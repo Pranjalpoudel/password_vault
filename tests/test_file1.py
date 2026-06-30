@@ -7,6 +7,7 @@ from file1 import (
     list_tasks,
     search_tasks,
     task_stats,
+    update_task,
 )
 
 
@@ -53,3 +54,16 @@ def test_search_tasks(tmp_path: Path) -> None:
 
     matches = search_tasks("parser", path=path)
     assert len(matches) == 2
+
+
+def test_update_task(tmp_path: Path) -> None:
+    path = tmp_path / "tasks.json"
+
+    add_task("Draft outline", note="Initial draft", path=path)
+
+    updated = update_task(1, title="Draft outline v2", note="Refined draft", priority="high", path=path)
+
+    assert updated is not None
+    assert updated["title"] == "Draft outline v2"
+    assert updated["note"] == "Refined draft"
+    assert updated["priority"] == "high"
