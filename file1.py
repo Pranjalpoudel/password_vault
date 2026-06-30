@@ -145,6 +145,11 @@ def task_stats(path: Optional[Path] = None) -> dict:
     }
 
 
+def task_summary(path: Optional[Path] = None) -> str:
+    stats = task_stats(path=path)
+    return f"{stats['pending']} pending, {stats['completed']} completed, {stats['total']} total"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="PhaseBuilder task manager")
     parser.add_argument("--path", default=str(DEFAULT_PATH), help="Path to the task storage file")
@@ -177,6 +182,7 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser.add_argument("keyword", help="Keyword to search for")
 
     subparsers.add_parser("stats", help="Show task statistics")
+    subparsers.add_parser("summary", help="Show a compact task summary")
     return parser
 
 
@@ -254,6 +260,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"Total: {stats['total']}")
         print(f"Completed: {stats['completed']}")
         print(f"Pending: {stats['pending']}")
+        return 0
+
+    if args.command == "summary":
+        print(task_summary(path=storage_path))
         return 0
 
     parser.print_help()

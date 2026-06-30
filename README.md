@@ -86,6 +86,12 @@ Show statistics:
 python file1.py stats
 ```
 
+Show a compact summary:
+
+```bash
+python file1.py summary
+```
+
 ## Project structure
 
 - file1.py - the main CLI application

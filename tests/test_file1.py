@@ -8,6 +8,7 @@ from file1 import (
     list_tasks,
     search_tasks,
     task_stats,
+    task_summary,
     update_task,
 )
 
@@ -92,3 +93,13 @@ def test_list_tasks_by_priority(tmp_path: Path) -> None:
 
     assert len(filtered) == 1
     assert filtered[0]["title"] == "Plan sprint"
+
+
+def test_task_summary(tmp_path: Path) -> None:
+    path = tmp_path / "tasks.json"
+
+    add_task("Draft plan", path=path)
+    add_task("Ship update", path=path)
+    complete_task(1, path=path)
+
+    assert task_summary(path=path) == "1 pending, 1 completed, 2 total"
