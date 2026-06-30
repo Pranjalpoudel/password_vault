@@ -65,14 +65,21 @@ def update_task(
     return None
 
 
-def list_tasks(path: Optional[Path] = None, completed: Optional[bool] = None) -> list[dict]:
+def list_tasks(
+    path: Optional[Path] = None,
+    completed: Optional[bool] = None,
+    priority: Optional[str] = None,
+) -> list[dict]:
     storage_path = path or DEFAULT_PATH
     tasks = _load_tasks(storage_path)
 
-    if completed is None:
-        return tasks
+    filtered = tasks
+    if completed is not None:
+        filtered = [task for task in filtered if task.get("completed") is completed]
+    if priority is not None:
+        filtered = [task for task in filtered if task.get("priority") == priority]
 
-    return [task for task in tasks if task.get("completed") is completed]
+    return filtered
 
 
 def complete_task(task_id: int, path: Optional[Path] = None) -> Optional[dict]:
@@ -150,6 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     list_parser = subparsers.add_parser("list", help="List tasks")
     list_parser.add_argument("--all", action="store_true", help="Show completed and pending tasks")
+    list_parser.add_argument("--priority", choices=["low", "medium", "high"], help="Filter by task priority")
 
     complete_parser = subparsers.add_parser("complete", help="Mark a task as complete")
     complete_parser.add_argument("task_id", type=int, help="ID of the task to complete")
@@ -199,7 +207,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     if args.command == "list":
         completed_filter = None if args.all else False
-        _print_tasks(list_tasks(path=storage_path, completed=completed_filter))
+        _print_tasks(list_tasks(path=storage_path, completed=completed_filter, priority=args.priority))
         return 0
 
     if args.command == "complete":

@@ -80,3 +80,15 @@ def test_complete_all_tasks(tmp_path: Path) -> None:
 
     assert completed_count == 2
     assert list_tasks(path=path, completed=False) == []
+
+
+def test_list_tasks_by_priority(tmp_path: Path) -> None:
+    path = tmp_path / "tasks.json"
+
+    add_task("Plan sprint", priority="high", path=path)
+    add_task("Review notes", priority="low", path=path)
+
+    filtered = list_tasks(path=path, priority="high")
+
+    assert len(filtered) == 1
+    assert filtered[0]["title"] == "Plan sprint"
