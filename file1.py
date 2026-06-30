@@ -103,9 +103,10 @@ def delete_task(task_id: int, path: Optional[Path] = None) -> bool:
 def search_tasks(keyword: str, path: Optional[Path] = None) -> list[dict]:
     storage_path = path or DEFAULT_PATH
     query = keyword.lower()
+    tasks = _load_tasks(storage_path)
     return [
         task
-        for task in _load_tasks(storage_path)
+        for task in tasks
         if query in str(task.get("title", "")).lower()
         or query in str(task.get("note", "")).lower()
         or query in str(task.get("priority", "")).lower()
