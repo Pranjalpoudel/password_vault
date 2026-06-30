@@ -100,6 +100,20 @@ def delete_task(task_id: int, path: Optional[Path] = None) -> bool:
     return True
 
 
+def complete_all_tasks(path: Optional[Path] = None) -> int:
+    storage_path = path or DEFAULT_PATH
+    tasks = _load_tasks(storage_path)
+    pending = [task for task in tasks if not task.get("completed")]
+
+    for task in pending:
+        task["completed"] = True
+
+    if pending:
+        _save_tasks(storage_path, tasks)
+
+    return len(pending)
+
+
 def search_tasks(keyword: str, path: Optional[Path] = None) -> list[dict]:
     storage_path = path or DEFAULT_PATH
     query = keyword.lower()
@@ -148,6 +162,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     delete_parser = subparsers.add_parser("delete", help="Delete a task")
     delete_parser.add_argument("task_id", type=int, help="ID of the task to remove")
+
+    subparsers.add_parser("complete-all", help="Mark all pending tasks as complete")
 
     search_parser = subparsers.add_parser("search", help="Search tasks")
     search_parser.add_argument("keyword", help="Keyword to search for")
@@ -214,6 +230,11 @@ def main(argv: Optional[list[str]] = None) -> int:
             print(f"Deleted task {args.task_id}.")
         else:
             print("Task not found.")
+        return 0
+
+    if args.command == "complete-all":
+        completed_count = complete_all_tasks(path=storage_path)
+        print(f"Completed {completed_count} task(s).")
         return 0
 
     if args.command == "search":
