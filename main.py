@@ -7,10 +7,15 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from tkinter import scrolledtext
 import os
+from dotenv import load_dotenv
 from database import VaultDatabase
 from auth import AuthManager
 from vault import CredentialVault
 from generator import PasswordGenerator, PasswordStrengthChecker
+from config import Config
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class PasswordVaultApp:
@@ -23,15 +28,32 @@ class PasswordVaultApp:
         self.root.geometry("800x600")
         self.root.resizable(False, False)
 
-        # Database and auth
-        self.db = VaultDatabase()
+        # Initialize database with Config
+        try:
+            self.db = VaultDatabase(
+                host=Config.DB_HOST,
+                user=Config.DB_USER,
+                password=Config.DB_PASSWORD,
+                database=Config.DB_NAME,
+                port=Config.DB_PORT
+            )
+            self.db.initialize_schema()
+        except Exception as e:
+            messagebox.showerror(
+                "Database Error", 
+                f"Failed to connect to database:\n\n{str(e)}\n\n"
+                "Please ensure:\n"
+                "1. PostgreSQL is installed and running\n"
+                "2. Create a .env file with your credentials (see .env.example)\n"
+                "3. Run setup_database.py to initialize"
+            )
+            root.destroy()
+            return
+
         self.auth = AuthManager(self.db)
         self.vault = None
         self.user_id = None
         self.current_user = None
-
-        # Initialize database
-        self.db.initialize_schema()
 
         # Start with login screen
         self.show_login_screen()
