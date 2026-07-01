@@ -7,21 +7,25 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from tkinter import scrolledtext
 import os
-from dotenv import load_dotenv
+from typing import Optional
 from database import VaultDatabase
 from auth import AuthManager
 from vault import CredentialVault
 from generator import PasswordGenerator, PasswordStrengthChecker
 from config import Config
 
-# Load environment variables from .env file
-load_dotenv()
-
 
 class PasswordVaultApp:
     """Main Tkinter application for the password vault."""
+    
+    root: tk.Tk
+    db: VaultDatabase
+    auth: AuthManager
+    vault: Optional[CredentialVault]
+    user_id: Optional[int]
+    current_user: Optional[str]
 
-    def __init__(self, root):
+    def __init__(self, root: tk.Tk) -> None:
         """Initialize the application."""
         self.root = root
         self.root.title("Secure Password Vault")
@@ -93,6 +97,7 @@ class PasswordVaultApp:
 
             success, user_id, message = self.auth.login_user(username, password)
             if success:
+                assert user_id is not None, "user_id should not be None on successful login"
                 self.user_id = user_id
                 self.current_user = username
                 self.vault = CredentialVault(self.db, user_id)
@@ -111,8 +116,8 @@ class PasswordVaultApp:
             success, message = self.auth.register_user(username, password)
             if success:
                 messagebox.showinfo("Success", message)
-                username_var.delete(0, tk.END)
-                password_var.delete(0, tk.END)
+                username_var.set("")
+                password_var.set("")
             else:
                 messagebox.showerror("Registration Failed", message)
 
@@ -123,6 +128,8 @@ class PasswordVaultApp:
 
     def show_vault_screen(self):
         """Display the main vault management screen."""
+        assert self.vault is not None, "Vault should be initialized after login"
+        vault = self.vault  # Type guard
         self.clear_window()
 
         # Header
@@ -180,7 +187,7 @@ class PasswordVaultApp:
             for item in tree.get_children():
                 tree.delete(item)
             
-            entries = self.vault.list_entries(search_term)
+            entries = vault.list_entries(search_term)
             for entry in entries:
                 tree.insert(
                     "",
@@ -206,6 +213,8 @@ class PasswordVaultApp:
 
     def show_add_entry_dialog(self):
         """Show dialog to add a new vault entry."""
+        assert self.vault is not None, "Vault should be initialized"
+        vault = self.vault  # Type guard
         dialog = tk.Toplevel(self.root)
         dialog.title("Add New Entry")
         dialog.geometry("500x400")
@@ -242,7 +251,7 @@ class PasswordVaultApp:
                 messagebox.showerror("Error", "Please fill in all required fields.")
                 return
 
-            success, message = self.vault.add_entry(service, username, password, notes)
+            success, message = vault.add_entry(service, username, password, notes)
             if success:
                 messagebox.showinfo("Success", message)
                 dialog.destroy()
@@ -257,7 +266,9 @@ class PasswordVaultApp:
 
     def show_entry_details(self, entry_id: int):
         """Show details of a specific entry."""
-        entry = self.vault.get_entry(entry_id)
+        assert self.vault is not None, "Vault should be initialized"
+        vault = self.vault  # Type guard
+        entry = vault.get_entry(entry_id)
         if not entry:
             messagebox.showerror("Error", "Entry not found.")
             return
@@ -301,7 +312,7 @@ class PasswordVaultApp:
         button_frame.pack(pady=20)
 
         def update_entry():
-            success, message = self.vault.update_entry(
+            success, message = vault.update_entry(
                 entry_id,
                 service_name=service_var.get(),
                 service_username=username_var.get(),
@@ -317,7 +328,7 @@ class PasswordVaultApp:
 
         def delete_entry():
             if messagebox.askyesno("Confirm", "Are you sure you want to delete this entry?"):
-                success, message = self.vault.delete_entry(entry_id)
+                success, message = vault.delete_entry(entry_id)
                 if success:
                     messagebox.showinfo("Success", message)
                     dialog.destroy()
