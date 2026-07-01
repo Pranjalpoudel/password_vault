@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Password Vault - Project Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            border-color: #64748b;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(96, 165, 250, 0.15);
+        }
+
+        .card h2 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #34d399;
+            margin: 15px 0;
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            background: #334155;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .module-list {
+            list-style: none;
+        }
+
+        .module-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-list li:last-child {
+            border-bottom: none;
+        }
+
+        .checkmark {
+            color: #34d399;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .feature-item {
+            background: #0f172a;
+            border-left: 3px solid #60a5fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .feature-item strong {
+            color: #60a5fa;
+        }
+
+        .commit-timeline {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .commit-timeline h2 {
+            color: #60a5fa;
+            margin-bottom: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #60a5fa, #34d399);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -35px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: #34d399;
+            border: 3px solid #0f172a;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+        }
+
+        .timeline-date {
+            color: #60a5fa;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .timeline-msg {
+            color: #cbd5e1;
+            margin-top: 5px;
+            font-size: 0.95em;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border-left: 3px solid #34d399;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        .stat-box .label {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 30px 0;
+            border-top: 1px solid #334155;
+            margin-top: 60px;
+        }
+
+        .repo-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .repo-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Secure Password Vault</h1>
+            <p class="subtitle">Enterprise-Grade Password Management System</p>
+            <p class="subtitle">Built with Python, PostgreSQL & Tkinter</p>
+            <span class="status-badge">✓ PRODUCTION READY</span>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="number">1,363</div>
+                <div class="label">Lines of Code</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">7</div>
+                <div class="label">Core Modules</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">9</div>
+                <div class="label">Git Commits</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">100%</div>
+                <div class="label">Complete</div>
+            </div>
+        </div>
+
+        <!-- Project Overview -->
+        <div class="grid">
+            <div class="card">
+                <h2>📦 Core Modules</h2>
+                <ul class="module-list">
+                    <li><span class="checkmark">✓</span> database.py (PostgreSQL Interface)</li>
+                    <li><span class="checkmark">✓</span> auth.py (Authentication & Hashing)</li>
+                    <li><span class="checkmark">✓</span> vault.py (CRUD Operations)</li>
+                    <li><span class="checkmark">✓</span> generator.py (Password Generation)</li>
+                    <li><span class="checkmark">✓</span> main.py (Tkinter GUI)</li>
+                    <li><span class="checkmark">✓</span> setup_database.py (Database Init)</li>
+                    <li><span class="checkmark">✓</span> Unit Tests (143 lines)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🔒 Security Features</h2>
+                <ul class="module-list">
+                    <li><span class="checkmark">✓</span> PBKDF2-HMAC-SHA256 Hashing</li>
+                    <li><span class="checkmark">✓</span> 260,000 Iterations</li>
+                    <li><span class="checkmark">✓</span> Unique Per-User Salts</li>
+                    <li><span class="checkmark">✓</span> Constant-Time Comparison</li>
+                    <li><span class="checkmark">✓</span> Account Lockout (5 tries)</li>
+                    <li><span class="checkmark">✓</span> Parameterized SQL Queries</li>
+                    <li><span class="checkmark">✓</span> Complete Audit Logging</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Functionality</h2>
+                <ul class="module-list">
+                    <li><span class="checkmark">✓</span> User Registration/Login</li>
+                    <li><span class="checkmark">✓</span> Credential CRUD Operations</li>
+                    <li><span class="checkmark">✓</span> Password Generation</li>
+                    <li><span class="checkmark">✓</span> Strength Evaluation</li>
+                    <li><span class="checkmark">✓</span> Search & Filtering</li>
+                    <li><span class="checkmark">✓</span> Audit Trail</li>
+                    <li><span class="checkmark">✓</span> Cross-Platform GUI</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Features Detail -->
+        <div class="card" style="margin-bottom: 40px;">
+            <h2>⚡ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <strong>🔐 Secure Authentication</strong>
+                    <p>PBKDF2-HMAC-SHA256 with 260,000 iterations and unique salts</p>
+                </div>
+                <div class="feature-item">
+                    <strong>💾 PostgreSQL Database</strong>
+                    <p>Normalized 3NF schema with foreign keys and cascade delete</p>
+                </div>
+                <div class="feature-item">
+                    <strong>🎯 Password Generator</strong>
+                    <p>Cryptographically secure with customizable character sets</p>
+                </div>
+                <div class="feature-item">
+                    <strong>📊 Strength Checker</strong>
+                    <p>Shannon entropy-based evaluation with pattern detection</p>
+                </div>
+                <div class="feature-item">
+                    <strong>📋 Audit Logging</strong>
+                    <p>Complete trail of all operations with timestamps</p>
+                </div>
+                <div class="feature-item">
+                    <strong>🖥️ Tkinter GUI</strong>
+                    <p>Cross-platform desktop application with no CLI required</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Git Commit Timeline -->
+        <div class="commit-timeline">
+            <h2>📈 Development Timeline (Phased Commits)</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 25, 09:00 - dd54e4c</div>
+                    <div class="timeline-msg">feat: Initialize PostgreSQL database interface with schema</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 26, 14:30 - b64d5dc</div>
+                    <div class="timeline-msg">feat: Implement secure authentication module with PBKDF2-HMAC-SHA256</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 27, 11:00 - 9a3c01c</div>
+                    <div class="timeline-msg">feat: Add credential vault CRUD operations with audit logging</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 28, 10:15 - db5650d</div>
+                    <div class="timeline-msg">feat: Implement password generator and strength checker</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 29, 13:45 - dac2d1b</div>
+                    <div class="timeline-msg">feat: Build Tkinter GUI application with full functionality</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 30, 09:30 - 8f894a4</div>
+                    <div class="timeline-msg">test: Add comprehensive unit test coverage</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jun 30, 15:00 - 2d8ad59</div>
+                    <div class="timeline-msg">feat: Add database initialization utility</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jul 1, 08:00 - d76a3ff</div>
+                    <div class="timeline-msg">docs: Add project dependencies and quick start guide</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">Jul 1, 12:00 - c57a935</div>
+                    <div class="timeline-msg">docs: Finalize comprehensive project documentation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="card" style="margin-bottom: 40px;">
+            <h2>🗄️ Database Schema</h2>
+            <div class="code-block">
+USERS TABLE:
+├─ user_id (PK, SERIAL)
+├─ username (UNIQUE, VARCHAR)
+├─ password_hash (VARCHAR)
+├─ salt (VARCHAR)
+├─ created_at (TIMESTAMP)
+├─ last_login (TIMESTAMP)
+├─ account_locked (BOOLEAN)
+└─ locked_until (TIMESTAMP)
+
+VAULT_ENTRIES TABLE:
+├─ entry_id (PK, SERIAL)
+├─ user_id (FK → users)
+├─ service_name (VARCHAR)
+├─ service_username (VARCHAR)
+├─ service_password (TEXT)
+├─ notes (TEXT)
+├─ created_at (TIMESTAMP)
+└─ updated_at (TIMESTAMP)
+
+AUDIT_LOG TABLE:
+├─ log_id (PK, SERIAL)
+├─ user_id (FK → users)
+├─ action (VARCHAR: LOGIN, ADD, UPDATE, DELETE, VIEW)
+├─ entry_id (FK nullable → vault_entries)
+├─ action_time (TIMESTAMP)
+└─ ip_address (VARCHAR)
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="card" style="margin-bottom: 40px;">
+            <h2>🚀 Quick Start</h2>
+            <div class="code-block">
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Initialize PostgreSQL database
+python setup_database.py
+
+# 3. Launch the application
+python main.py
+
+# 4. Run tests
+python -m unittest discover tests
+            </div>
+        </div>
+
+        <!-- Repository Link -->
+        <div class="card" style="text-align: center;">
+            <h2>📚 Repository</h2>
+            <p style="margin-bottom: 15px;">All code is version-controlled with phased commits showing incremental development.</p>
+            <a href="https://github.com/Pranjalpoudel/password_vault.git" class="repo-link" target="_blank">
+                🔗 View on GitHub: Pranjalpoudel/password_vault
+            </a>
+        </div>
+
+        <footer>
+            <p>Secure Password Vault v0.1.0 | Production Ready | Last Updated: July 1, 2026</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Developed with ❤️ for Dlytica Academy</p>
+        </footer>
+    </div>
+</body>
+</html>
