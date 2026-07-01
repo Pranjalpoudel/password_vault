@@ -5,6 +5,7 @@
 ### 🎉 Features
 
 #### Security
+
 - ✅ PBKDF2-HMAC-SHA256 password hashing (260,000 iterations)
 - ✅ Unique per-user 32-byte random salts
 - ✅ Constant-time password comparison
@@ -13,6 +14,7 @@
 - ✅ Complete audit logging
 
 #### Functionality
+
 - ✅ User registration and login
 - ✅ Credential CRUD operations (Create, Read, Update, Delete)
 - ✅ Password generator (cryptographically secure)
@@ -22,11 +24,13 @@
 - ✅ PostgreSQL backend
 
 #### Testing
+
 - ✅ Unit tests (auth, password generation)
 - ✅ Integration tests (complete workflows)
 - ✅ 100+ test cases
 
 #### Documentation
+
 - ✅ README with complete API reference
 - ✅ User manual with step-by-step guide
 - ✅ API documentation
@@ -37,17 +41,17 @@
 
 ### 📦 Core Modules
 
-| Module | Purpose | Lines |
-|--------|---------|-------|
-| database.py | PostgreSQL interface | 132 |
-| auth.py | Authentication & hashing | 187 |
-| vault.py | Credential management | 204 |
-| generator.py | Password generation | 227 |
-| main.py | Tkinter GUI | 412 |
-| config.py | Configuration management | 48 |
-| logger.py | Logging system | 72 |
-| utils.py | Utilities | 86 |
-| api.py | High-level API | 95 |
+| Module       | Purpose                  | Lines |
+| ------------ | ------------------------ | ----- |
+| database.py  | PostgreSQL interface     | 132   |
+| auth.py      | Authentication & hashing | 187   |
+| vault.py     | Credential management    | 204   |
+| generator.py | Password generation      | 227   |
+| main.py      | Tkinter GUI              | 412   |
+| config.py    | Configuration management | 48    |
+| logger.py    | Logging system           | 72    |
+| utils.py     | Utilities                | 86    |
+| api.py       | High-level API           | 95    |
 
 **Total:** 1,463 lines of code
 

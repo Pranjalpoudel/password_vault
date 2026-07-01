@@ -24,6 +24,7 @@ This manual guides you through using the Secure Password Vault application. The 
    - Linux: `sudo apt-get install python3 python3-pip`
 
 2. **Download and Setup**
+
    ```bash
    git clone https://github.com/Pranjalpoudel/password_vault.git
    cd password_vault
@@ -104,7 +105,7 @@ This manual guides you through using the Secure Password Vault application. The 
    - ☑ Uppercase (A-Z)
    - ☑ Lowercase (a-z)
    - ☑ Digits (0-9)
-   - ☑ Symbols (!@#$%^&*)
+   - ☑ Symbols (!@#$%^&\*)
 4. **Click "Generate"** button
 5. **View** strength indicator:
    - 🔴 Very Weak (avoid)
@@ -123,13 +124,13 @@ This manual guides you through using the Secure Password Vault application. The 
 
 ### Password Strength Explained
 
-| Level | Entropy | What It Means |
-|-------|---------|--------------|
-| Very Weak | <20 bits | Easy to crack - avoid |
-| Weak | 20-40 bits | Not recommended |
-| Fair | 40-60 bits | Acceptable for low-security |
-| Good | 60-90 bits | Recommended for most services |
-| Very Strong | >90 bits | Excellent for banking/critical |
+| Level       | Entropy    | What It Means                  |
+| ----------- | ---------- | ------------------------------ |
+| Very Weak   | <20 bits   | Easy to crack - avoid          |
+| Weak        | 20-40 bits | Not recommended                |
+| Fair        | 40-60 bits | Acceptable for low-security    |
+| Good        | 60-90 bits | Recommended for most services  |
+| Very Strong | >90 bits   | Excellent for banking/critical |
 
 ## Searching & Organizing
 
@@ -145,6 +146,7 @@ This manual guides you through using the Secure Password Vault application. The 
 Credentials are automatically sorted alphabetically by service name.
 
 **Tip:** Use naming conventions:
+
 - Prefix critical accounts: `[CRITICAL] Bank of America`
 - Prefix work accounts: `[WORK] GitHub Enterprise`
 
@@ -175,6 +177,7 @@ Credentials are automatically sorted alphabetically by service name.
 ⚠️ **No way to recover master password!**
 
 If you forget your master password:
+
 1. All your credentials are inaccessible
 2. The database cannot be decrypted
 3. You must start over with a new vault
@@ -186,11 +189,13 @@ If you forget your master password:
 ### "Invalid username or password" on login
 
 **Causes:**
+
 - Typed username wrong
 - Typed password wrong (case-sensitive)
 - Account locked due to multiple failed attempts
 
 **Solutions:**
+
 - Check username spelling
 - Verify password is correct
 - Wait 10 minutes if account locked
@@ -199,11 +204,13 @@ If you forget your master password:
 ### "Database connection error"
 
 **Causes:**
+
 - PostgreSQL is not running
 - Database not initialized
 - Wrong credentials in `.env`
 
 **Solutions:**
+
 1. Ensure PostgreSQL is installed and running
 2. Run `python setup_database.py` again
 3. Check database credentials in `.env` file
@@ -212,11 +219,13 @@ If you forget your master password:
 ### "Service seems unresponsive"
 
 **Causes:**
+
 - Application frozen
 - Database query taking long time
 - Computer low on memory
 
 **Solutions:**
+
 - Close and reopen application
 - Restart PostgreSQL
 - Free up system memory
@@ -225,11 +234,13 @@ If you forget your master password:
 ### Application won't start
 
 **Causes:**
+
 - Python 3.10+ not installed
 - Dependencies not installed
 - PostgreSQL not installed
 
 **Solutions:**
+
 ```bash
 # Check Python version
 python --version  # Must be 3.10+
@@ -248,6 +259,7 @@ pip install -r requirements.txt --force-reinstall
 ⚠️ **Recovery is NOT possible**
 
 You must:
+
 1. Delete the old vault database
 2. Run `python setup_database.py` to create new database
 3. Register with a new username
@@ -300,17 +312,17 @@ A: Not in v0.1.0 for security. Future versions may support encrypted exports.
 
 ## Quick Reference
 
-| Action | How |
-|--------|-----|
-| Register | Launch → Register button → Fill form |
-| Login | Enter credentials → Click Login |
-| Add password | Add Entry → Fill form → Save |
-| View password | Double-click entry → Show/Hide button |
-| Edit password | Open entry → Change fields → Update |
-| Delete password | Open entry → Delete button → Confirm |
+| Action            | How                                      |
+| ----------------- | ---------------------------------------- |
+| Register          | Launch → Register button → Fill form     |
+| Login             | Enter credentials → Click Login          |
+| Add password      | Add Entry → Fill form → Save             |
+| View password     | Double-click entry → Show/Hide button    |
+| Edit password     | Open entry → Change fields → Update      |
+| Delete password   | Open entry → Delete button → Confirm     |
 | Generate password | Generate Password → Configure → Generate |
-| Search | Type in search box → View results |
-| Logout | Close application (auto-logout) |
+| Search            | Type in search box → View results        |
+| Logout            | Close application (auto-logout)          |
 
 ---
 

@@ -117,7 +117,7 @@ CMD ["python", "main.py"]
 ### Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -233,6 +233,7 @@ gunzip < backup_20260701_120000.sql.gz | psql -U vault_user password_vault
 ## Monitoring & Maintenance
 
 ### Monitoring Checklist
+
 - [ ] Disk space usage
 - [ ] Database performance
 - [ ] Application logs
@@ -285,15 +286,17 @@ ssl_key_file = '/path/to/key.pem'
 ## Troubleshooting
 
 ### Database Connection Issues
+
 ```
 Error: "could not connect to server"
-Solution: 
+Solution:
 1. Verify PostgreSQL is running
 2. Check DB_HOST, DB_PORT in .env
 3. Verify credentials
 ```
 
 ### Permission Errors
+
 ```
 Error: "permission denied"
 Solution:
@@ -303,9 +306,10 @@ Solution:
 ```
 
 ### Performance Issues
+
 ```sql
 -- Check slow queries
-SELECT query, calls, mean_time FROM pg_stat_statements 
+SELECT query, calls, mean_time FROM pg_stat_statements
 ORDER BY mean_time DESC LIMIT 10;
 
 -- Vacuum and analyze

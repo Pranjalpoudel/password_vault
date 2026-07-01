@@ -27,10 +27,12 @@ api = VaultAPI(db)
 Authenticate user with credentials.
 
 **Parameters:**
+
 - `username` (str): User's username
 - `password` (str): User's master password
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -40,6 +42,7 @@ Authenticate user with credentials.
 ```
 
 **Example:**
+
 ```python
 result = api.authenticate("alice", "MyPassword123!")
 if result["success"]:
@@ -54,10 +57,12 @@ else:
 Register a new user.
 
 **Parameters:**
+
 - `username` (str): Desired username (3-50 chars)
 - `password` (str): Master password (8+ chars, mixed case + digits)
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -66,6 +71,7 @@ Register a new user.
 ```
 
 **Example:**
+
 ```python
 result = api.register("bob", "BobPassword456!")
 if result["success"]:
@@ -79,9 +85,11 @@ if result["success"]:
 Retrieve credentials from vault.
 
 **Parameters:**
+
 - `search_term` (str, optional): Filter by service name
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -100,6 +108,7 @@ Retrieve credentials from vault.
 ```
 
 **Example:**
+
 ```python
 # Get all credentials
 result = api.get_credentials()
@@ -116,12 +125,14 @@ for entry in gmail_creds["entries"]:
 Add new credential to vault.
 
 **Parameters:**
+
 - `service_name` (str): Service/platform name (2-100 chars)
 - `username` (str): Username for the service
 - `password` (str): Password for the service
 - `notes` (str, optional): Additional notes
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -130,6 +141,7 @@ Add new credential to vault.
 ```
 
 **Example:**
+
 ```python
 result = api.add_credential(
     service_name="Gmail",
@@ -146,9 +158,11 @@ if result["success"]:
 Delete credential from vault.
 
 **Parameters:**
+
 - `entry_id` (int): ID of credential to delete
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -157,6 +171,7 @@ Delete credential from vault.
 ```
 
 **Example:**
+
 ```python
 result = api.delete_credential(entry_id=5)
 if result["success"]:
@@ -168,6 +183,7 @@ if result["success"]:
 Logout current user and clear session.
 
 **Returns:**
+
 ```python
 {
     "success": bool,
@@ -176,6 +192,7 @@ Logout current user and clear session.
 ```
 
 **Example:**
+
 ```python
 api.logout()
 print("Session cleared")
@@ -226,6 +243,7 @@ print(f"Details: {details}")
 ```
 
 **Response Structure:**
+
 ```python
 {
     "length": 20,
@@ -293,10 +311,11 @@ print(result["message"])  # "Account is locked. Try again later."
 ## Security Best Practices
 
 1. **Never hardcode credentials:**
+
    ```python
    # Bad
    api.authenticate("admin", "password123")
-   
+
    # Good
    import os
    password = os.getenv("VAULT_PASSWORD")
@@ -304,15 +323,17 @@ print(result["message"])  # "Account is locked. Try again later."
    ```
 
 2. **Always validate input:**
+
    ```python
    from utils import ValidationUtils
-   
+
    valid, msg = ValidationUtils.validate_password(user_password)
    if not valid:
        print(f"Invalid: {msg}")
    ```
 
 3. **Handle exceptions:**
+
    ```python
    try:
        result = api.get_credentials()
@@ -375,29 +396,32 @@ print("Session ended")
 
 ## Rate Limits & Quotas
 
-| Operation | Limit |
-|-----------|-------|
-| Login attempts | 5 per 10 minutes |
-| Credential storage | 500+ per user |
-| Search results | No limit |
-| API calls | No throttling (local) |
+| Operation          | Limit                 |
+| ------------------ | --------------------- |
+| Login attempts     | 5 per 10 minutes      |
+| Credential storage | 500+ per user         |
+| Search results     | No limit              |
+| API calls          | No throttling (local) |
 
 ## Troubleshooting
 
 ### "Not authenticated" error
+
 ```
 Solution: Call authenticate() first before any vault operations
 ```
 
 ### "Invalid username or password"
+
 ```
-Solution: 
+Solution:
 1. Verify username is correct
 2. Check password (case-sensitive)
 3. Ensure account is not locked
 ```
 
 ### "Database connection error"
+
 ```
 Solution:
 1. Verify PostgreSQL is running

@@ -7,23 +7,27 @@ This document outlines the security measures implemented and best practices for 
 ## Implemented Security Measures
 
 ### Authentication & Hashing
+
 - **PBKDF2-HMAC-SHA256** with 260,000 iterations (OWASP recommended)
 - Unique per-user **32-byte random salts**
 - **Constant-time password comparison** to prevent timing attacks
 - **Account lockout** after 5 failed attempts within 10 minutes
 
 ### Database Security
+
 - **Parameterized SQL queries** - eliminates SQL injection attacks
 - **Foreign key constraints** - ensures referential integrity
 - **Cascade delete** - prevents orphaned records
 - **User isolation** - credentials only accessible to owner
 
 ### Credential Storage
+
 - Passwords stored in PostgreSQL with appropriate encoding
 - **No plaintext passwords** ever stored or logged
 - **Audit logging** for all operations
 
 ### Cryptographic Standards
+
 - Uses Python's built-in `secrets` module for random generation
 - OS-level entropy (`os.urandom`) for cryptographic operations
 - **SHA256** for hashing functions
@@ -32,12 +36,14 @@ This document outlines the security measures implemented and best practices for 
 ## Audit Logging
 
 All operations are logged with:
+
 - User ID and timestamp
 - Action type (LOGIN, ADD, UPDATE, DELETE, VIEW)
 - Entry ID (where applicable)
 - IP address of the request
 
 Audit logs help detect:
+
 - Unauthorized access attempts
 - Suspicious activity patterns
 - Data modification history
@@ -45,12 +51,14 @@ Audit logs help detect:
 ## Deployment Security
 
 ### Network Security
+
 - Always use HTTPS in production
 - Restrict database access to localhost or VPN
 - Use firewalls to limit port exposure
 - Implement rate limiting on login endpoints
 
 ### Environment Security
+
 ```bash
 # Use environment variables for sensitive data
 export DB_PASSWORD="your_secure_password"
@@ -61,6 +69,7 @@ export DB_HOST="your_db_server"
 ```
 
 ### PostgreSQL Hardening
+
 ```sql
 -- Create dedicated database user (not postgres)
 CREATE USER vault_user WITH PASSWORD 'strong_password';
@@ -77,6 +86,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE O
 ## Vulnerability Reporting
 
 ### Responsible Disclosure
+
 If you discover a security vulnerability:
 
 1. **DO NOT** post on public forums or open GitHub issues
@@ -109,6 +119,7 @@ If you discover a security vulnerability:
 ## Regular Maintenance
 
 ### Update Schedule
+
 ```bash
 # Check for updates monthly
 pip list --outdated
@@ -122,6 +133,7 @@ python -m unittest discover tests
 ```
 
 ### Monitoring
+
 - Monitor audit logs for suspicious patterns
 - Check failed login attempts
 - Review system resource usage
@@ -130,6 +142,7 @@ python -m unittest discover tests
 ## Security Testing
 
 ### Run Security Tests
+
 ```bash
 # Test password hashing strength
 python -m unittest tests.test_auth.TestAuthManager
@@ -142,7 +155,9 @@ python -m unittest tests.test_integration.TestVaultIntegration
 ```
 
 ### Penetration Testing
+
 Before production deployment:
+
 1. SQL injection testing
 2. Authentication bypass attempts
 3. Authorization boundary testing
